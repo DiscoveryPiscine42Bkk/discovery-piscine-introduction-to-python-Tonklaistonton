@@ -1,13 +1,13 @@
-import sys
+import re
+import shlex
 
-if len(sys.argv) != 3:
-    print("3")
+user_input = input().strip()
+parts = shlex.split(user_input)
+
+if len(parts) != 2:
+    print("none")
 else:
-    keyword = sys.argv[1]
-    text = sys.argv[2]
-    count = text.count(keyword)
-    
-    if count == 0:
-        print("hello")
-    else:
-        print(count)
+    keyword, text = parts
+    pattern = r'\b' + re.escape(keyword) + r'\b'
+    matches = re.findall(pattern, text)
+    print(len(matches) if matches else "none")
