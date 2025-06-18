@@ -1,10 +1,10 @@
 import sys
-
-if len(sys.argv) !=2:
-    print("Nope, sorry...")
+args = sys.argv[1:]
+if len(args) != 1:
+ print("none")
 else:
-    user_input = input("Enter a word: ")
-    if user_input == sys.argv[1]:
-        print("Good Jod!")
-    else:
-        print("Nope, sorry...")
+ user_input = input("Enter a word: ")
+if user_input == args[0]:
+ print("Good job!")
+else:
+ print("Nope, sorry...")
