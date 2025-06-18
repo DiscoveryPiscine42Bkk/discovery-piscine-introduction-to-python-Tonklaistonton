@@ -7,3 +7,5 @@ else:
     print(f"parameters: {len(args)}$")
 for param in args:
     print(f"{param} : {len(param)}$")
+
+# ignored  it UwU
