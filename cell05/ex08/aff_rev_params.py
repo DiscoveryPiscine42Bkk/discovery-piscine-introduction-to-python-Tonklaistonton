@@ -1,8 +1,7 @@
-import shlex
-user = input("")
-if user.upper(): 
-	print("none")
+import sys
+
+if len(sys.argv) < 3:
+    print("none")
 else:
-    words = shlex.split(user)
-    for word in words:
-        print(" " + word.lower())
+    for arg in reversed(sys.argv[1:]):
+        print(arg)
