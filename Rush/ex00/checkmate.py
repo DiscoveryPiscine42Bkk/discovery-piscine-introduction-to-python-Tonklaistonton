@@ -1,56 +1,64 @@
-def checkmate(*rows):
-    try:
-        n = len(rows)
-        if n == 0 or any(len(row) != n for row in rows):
-            print("Error: Invalid board")
-            return
-        board = [list(row) for row in rows]
-        pieces = {'K', 'Q', 'B', 'R', 'P'}
-        piece_dirs = {
-            'Q': [(-1,0), (1,0), (0,-1), (0,1), (-1,-1), (1,1), (1,-1), (-1,1)],
-            'R': [(-1,0), (1,0), (0,-1), (0,1)],
-            'B': [(-1,-1), (1,1), (1,-1), (-1,1)],
-        }
-        # Find king
-        king_pos = None
-        for i in range(n):
-            for j in range(n):
-                if board[i][j] == 'K':
-                    king_pos = (i, j)
-                    break
-            if king_pos is not None:
+def checkmate(board_str):
+    board = [list(line) for line in board_str.strip().split('\n')]
+    size = len(board)
+    
+    # Find King position
+    king_pos = None
+    for i in range(size):
+        for j in range(size):
+            if board[i][j] == 'K':
+                king_pos = (i, j)
                 break
-        if king_pos is None:
-            print("Error: No King found")
-            return
-        kx, ky = king_pos
-        # Check for Pawn ("P") attack
-        for dx, dy in [(-1,-1), (-1,1)]:
-            x, y = kx+dx, ky+dy
-            if 0 <= x < n and 0 <= y < n and board[x][y] == 'P':
-                print("Success")
-                return
-        # Check for all sliding pieces
-        for piece, dirs in piece_dirs.items():
-            for dx, dy in dirs:
-                x, y = kx+dx, ky+dy
-                while 0 <= x < n and 0 <= y < n:
-                    c = board[x][y]
-                    if c == '.':
-                        x += dx
-                        y += dy
-                        continue
-                    if c == piece or (piece == 'Q' and c in 'QR') or (piece == 'B' and c == 'Q') or (piece == 'R' and c == 'Q'):
-                        print("Success")
-                        return
-                    break
-        # Check for Knight ("N") attack
-        for dx, dy in [(-2,-1), (-2,1), (2,-1), (2,1), (-1,-2), (1,-2), (-1,2), (1,2)]:
-            x, y = kx+dx, ky+dy
-            if 0 <= x < n and 0 <= y < n and board[x][y] == 'N':
-                print("Success")
-                return
+        if king_pos:
+            break
+
+    if not king_pos:
         print("Fail")
-    except Exception:
-        # If any unexpected error, do not crash, just return
         return
+
+    ki, kj = king_pos
+
+    # Directions for Bishop/Queen (diagonals)
+    diag_dirs = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+    # Directions for Rook/Queen (straight)
+    straight_dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    # Pawn threats (assume enemy pawn moves from top to bottom)
+    pawn_attacks = [(-1, -1), (-1, 1)]
+
+    # Check for Pawns
+    for di, dj in pawn_attacks:
+        ni, nj = ki + di, kj + dj
+        if 0 <= ni < size and 0 <= nj < size and board[ni][nj] == 'P':
+            print("Success")
+            return
+
+    # Check for Bishop or Queen (diagonals)
+    for di, dj in diag_dirs:
+        ni, nj = ki + di, kj + dj
+        while 0 <= ni < size and 0 <= nj < size:
+            piece = board[ni][nj]
+            if piece != '.':
+                if piece in ('B', 'Q'):
+                    print("Success")
+                    return
+                else:
+                    break
+            ni += di
+            nj += dj
+
+    # Check for Rook or Queen (straight lines)
+    for di, dj in straight_dirs:
+        ni, nj = ki + di, kj + dj
+        while 0 <= ni < size and 0 <= nj < size:
+            piece = board[ni][nj]
+            if piece != '.':
+                if piece in ('R', 'Q'):
+                    print("Success")
+                    return
+                else:
+                    break
+            ni += di
+            nj += dj
+
+    # Not in check
+    print("Fail")
