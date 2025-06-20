@@ -5,6 +5,6 @@ def main():
 .K\
 """
  checkmate(board)
-#ฟังก์ชัน main() ถูกรัน
+
 if __name__ == "__main__":
  main()
